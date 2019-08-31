@@ -121,6 +121,39 @@ def get_one_user(current_user, public_id):
 
     return jsonify({'user': user_data})
 
+@app.route('/user/<public_id>', methods=['PUT'])
+@token_required
+def update_user(current_user, public_id):
+    if not current_user.admin:
+        return jsonify({'message': 'Access Denied!'})
+
+    user = User.query.filter_by(public_id=public_id).first()
+
+    if not user:
+        return jsonify({'message': 'No user found!'})
+
+    user.admin = True
+    db.session.commit()
+
+    return jsonify({'message': 'The user has been updated!'})
+
+@app.route('/user/<public_id>', methods=['DELETE'])
+@token_required
+def delete_user(current_user, public_id):
+    if not current_user.admin:
+        return jsonify({'message': 'Access Denied!'})
+
+    user = User.query.filter_by(public_id=public_id).first()
+
+    if not user:
+        return jsonify({'message': 'No user found!'})
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({'message': 'The user has been deleted'})
+
+
     
 
 
