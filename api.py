@@ -66,7 +66,21 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
 
     return decorated
-    
+
+@app.route('/user', methods=['POST'])
+@token_required
+def create_user(current_user):
+    if not current_user.admin:
+        return jsonify({'message': 'Cannot perform that function!'})
+    data = request.get_json()
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+
+    new_user = User(public_id=secrets.token_hex(16), name=data['name'], password=hashed_password, admin=False)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({'message' : 'New user created!'})
 
 
 if __name__ == '__main__':
