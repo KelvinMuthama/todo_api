@@ -153,6 +153,17 @@ def delete_user(current_user, public_id):
 
     return jsonify({'message': 'The user has been deleted'})
 
+@app.route('/todo', methods=['POST'])
+@token_required
+def create_todo(current_user):
+    data = request.get_json()
+
+    new_todo = Todo(text=data['text'], complete=False, user_id=current_user.id)
+
+    db.session.add(new_todo)
+    db.session.commit()
+
+    return jsonify({'message': 'Todo created!'})
 
     
 
