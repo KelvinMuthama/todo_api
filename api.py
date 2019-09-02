@@ -196,11 +196,21 @@ def get_one_todo(current_user, todo_id):
 
     return jsonify(todo_data)
 
+@app.route('/todo/<todo_id>', methods=['PUT'])
+@token_required
+def complete_todo(current_user, todo_id):
+    todo = Todo.query.filter_by(id=todo_id, user_id=current_user.id).first()
+
+    if not todo:
+        return  jsonify({"message": "No to do found!"})
+
+    todo.complete = True
+    db.session.commit()
+
+    return  jsonify({"message": "Todo item has been completed!"})
+
+
 
     
-
-
-
-
 if __name__ == '__main__':
     app.run(debug=True)
