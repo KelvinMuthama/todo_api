@@ -30,7 +30,7 @@ def get_all_todos(current_user):
         todo_data = {}
         todo_data['id'] = todo.id
         todo_data['text'] = todo.text
-        todo_data['comlete'] = todo.complete
+        todo_data['complete'] = todo.complete
         output.append(todo_data)
 
     return jsonify({'todos': output})
