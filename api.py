@@ -181,6 +181,22 @@ def get_all_todos(current_user):
 
     return jsonify({'todos': output})
 
+@app.route('/todo/<todo_id>', methods=['GET'])
+@token_required
+def get_one_todo(current_user, todo_id):
+    todo = Todo.query.filter_by(id=todo_id, user_id=current_user.id).first()
+
+    if not todo:
+        return jsonify({'message': 'No todo found!'})
+
+    todo_data = {}
+    todo_data['id'] = todo.id
+    todo_data['text'] = todo.text
+    todo_data['complete'] = todo.complete
+
+    return jsonify(todo_data)
+
+
     
 
 
